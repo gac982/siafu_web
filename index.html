@@ -3,14 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
   <title>Siafu — Pruebas de carga por terminal, configuradas con YAML</title>
   <meta name="description" content="Siafu es una herramienta de pruebas de carga por terminal, configurada con YAML y escrita en Go. Un binario, un YAML y tu destino.">
   <meta property="og:title" content="Siafu — Pruebas de carga por terminal">
+  <meta property="og:type" content="website">
   <meta property="og:description" content="Un binario, un YAML y tu destino. Sin JavaScript, sin navegadores, sin servicios externos.">
   <meta property="og:image" content="assets/logo.png">
   <link rel="icon" type="image/png" href="assets/logo.png">
   <style>
     :root {
+      color-scheme: dark;
       --color-ink: #0E1116;
       --color-bone: #E6E1D6;
       --color-ember: #FC4C02;
@@ -57,16 +60,28 @@
     }
     .section-title { font-size: 2rem; margin: 0 0 16px; }
     .lead { color: var(--color-ash); font-size: 1.0625rem; max-width: 60ch; }
+    .noscript {
+      background: var(--color-ember-subtle);
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 12px 16px;
+      color: var(--color-bone);
+      font-size: 0.875rem;
+      margin: 16px 0;
+    }
 
     /* Navegación */
-    .nav { border-bottom: 1px solid var(--color-border); }
+    .nav {
+      background: var(--color-ink-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
     .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
-      padding: 14px 0;
+      padding: 14px 20px;
     }
     .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .brand:hover { color: var(--color-bone); }
@@ -191,7 +206,7 @@
     .tui-spark { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
     .tui-spark-svg { flex: 1; height: 24px; min-width: 0; }
     .tui-log { padding: 10px 12px; border-bottom: 1px solid var(--color-border); }
-    .tui-log-lines { color: var(--color-ash); min-height: 3em; }
+    .tui-log-lines { color: var(--color-ash); min-height: 4.5rem; }
     .tui-log-lines .log-warn { color: var(--color-ember); }
     .tui-footer { padding: 8px 12px; color: var(--color-ash); font-size: 0.6875rem; }
 
@@ -253,6 +268,7 @@
     /* YAML */
     .yaml-tabs {
       display: flex;
+      flex-wrap: wrap;
       border-bottom: 1px solid var(--color-border);
       margin: 28px 0 24px;
       overflow-x: auto;
@@ -299,6 +315,10 @@
     }
     .yaml-validate { color: var(--color-ash); }
     .yaml-validate .ok { color: var(--color-ember); }
+    .yaml-code:focus-visible, .yaml-validate:focus-visible {
+      outline: 1px solid var(--color-ember);
+      outline-offset: 2px;
+    }
 
     @media (min-width: 900px) {
       .yaml-grid { grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: start; }
@@ -365,7 +385,10 @@
     }
 
     /* Footer */
-    .footer { border-bottom: 0; }
+    .footer {
+      background: var(--color-ink-surface);
+      border-bottom: 0;
+    }
     .footer-grid { display: grid; gap: 24px; }
     .footer-brand { display: flex; align-items: center; gap: 14px; }
     .footer-name { font-family: var(--font-serif); font-size: 1.25rem; letter-spacing: 0.14em; }
@@ -391,7 +414,7 @@
     }
 
     @media (min-width: 900px) {
-      .hero-grid { grid-template-columns: 45% 55%; gap: 48px; align-items: start; }
+      .hero-grid { grid-template-columns: minmax(0, 45fr) minmax(0, 55fr); gap: 48px; align-items: start; }
     }
 
     @media (min-width: 1200px) {
@@ -410,43 +433,20 @@
   </style>
 </head>
 <body>
+  <noscript>
+    <div class="wrap"><p class="noscript">Esta página usa JavaScript para el simulador de la TUI y el explorador YAML. El contenido estático sigue siendo legible.</p></div>
+  </noscript>
   <header class="nav" id="nav">
     <div class="wrap nav-inner">
       <a class="brand" href="#hero" aria-label="Siafu — inicio">
-        <svg width="34" height="34" viewBox="0 0 64 64" role="img" aria-label="Isotipo de la hormiga Siafu" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <clipPath id="siafu-left"><rect x="0" y="0" width="32" height="64"/></clipPath>
-            <clipPath id="siafu-right"><rect x="32" y="0" width="32" height="64"/></clipPath>
-          </defs>
-          <g clip-path="url(#siafu-left)" fill="#E6E1D6" stroke="#E6E1D6">
-            <circle cx="32" cy="18" r="6"/>
-            <ellipse cx="32" cy="32" rx="5" ry="6"/>
-            <ellipse cx="32" cy="48" rx="8" ry="10"/>
-          </g>
-          <g clip-path="url(#siafu-right)" fill="#FC4C02" stroke="#FC4C02">
-            <circle cx="32" cy="18" r="6"/>
-            <ellipse cx="32" cy="32" rx="5" ry="6"/>
-            <ellipse cx="32" cy="48" rx="8" ry="10"/>
-          </g>
-          <g stroke="#FC4C02" stroke-width="2.5" stroke-linecap="round" fill="none">
-            <path d="M28 14 L22 5"/>
-            <path d="M36 14 L42 5"/>
-            <path d="M28 28 L16 22"/>
-            <path d="M27 32 L13 32"/>
-            <path d="M28 36 L16 42"/>
-            <path d="M36 28 L48 22"/>
-            <path d="M37 32 L51 32"/>
-            <path d="M36 36 L48 42"/>
-          </g>
-          <path d="M6 40 H18 L22 33 L26 47 L30 40 H38 L42 36 L46 44 L50 40 H58" stroke="#7A8394" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
+        <img src="assets/logo.png" alt="Isotipo de la hormiga Siafu" width="34" height="34">
         <span class="brand-name">SIAFU</span>
         <span class="brand-version">v0.4.2</span>
       </a>
       <nav class="nav-links" aria-label="Navegación principal">
         <a href="#features">Características</a>
         <a href="#yaml">YAML</a>
-        <a href="#hero">Simulador TUI</a>
+        <a href="#tui">Simulador TUI</a>
         <a href="#manifest">Arquitectura</a>
         <a class="nav-github" href="https://github.com/gac982/siafu" rel="noopener">GitHub</a>
       </nav>
@@ -461,7 +461,7 @@
           <h1 class="hero-title">Pruebas de carga por terminal, configuradas con YAML y escritas en Go.</h1>
           <p class="lead">Un único binario estático, sin JavaScript ni navegadores, con modo cerrado y open-loop. Describe la prueba en YAML, ejecútala desde la terminal y obtén un veredicto con umbrales y diagnóstico determinista.</p>
           <div class="quick-start">
-            <code class="command" id="quickstart-command">./bin/siafu run examples/demo.yaml</code>
+            <code class="command" id="quickstart-command">siafu run examples/demo.yaml</code>
             <button class="copy-btn" id="copy-command" type="button" aria-label="Copiar comando">Copiar</button>
           </div>
         </div>
@@ -566,11 +566,11 @@
         </div>
         <div class="yaml-grid" role="tabpanel" id="yaml-panel" aria-labelledby="tab-basic">
           <div class="yaml-code-wrap">
-            <pre class="yaml-code"><code id="yaml-code"></code></pre>
+            <pre class="yaml-code" tabindex="0"><code id="yaml-code"></code></pre>
           </div>
           <div class="yaml-validate-wrap" aria-live="polite">
             <div class="yaml-validate-title">siafu validate</div>
-            <pre class="yaml-validate"><code id="yaml-validate"></code></pre>
+            <pre class="yaml-validate" tabindex="0"><code id="yaml-validate"></code></pre>
           </div>
         </div>
       </div>
@@ -641,33 +641,7 @@
   <footer class="section footer" id="footer">
     <div class="wrap footer-grid">
       <div class="footer-brand">
-        <svg width="44" height="44" viewBox="0 0 64 64" role="img" aria-label="Isotipo de la hormiga Siafu" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <clipPath id="siafu-left-footer"><rect x="0" y="0" width="32" height="64"/></clipPath>
-            <clipPath id="siafu-right-footer"><rect x="32" y="0" width="32" height="64"/></clipPath>
-          </defs>
-          <g clip-path="url(#siafu-left-footer)" fill="#E6E1D6" stroke="#E6E1D6">
-            <circle cx="32" cy="18" r="6"/>
-            <ellipse cx="32" cy="32" rx="5" ry="6"/>
-            <ellipse cx="32" cy="48" rx="8" ry="10"/>
-          </g>
-          <g clip-path="url(#siafu-right-footer)" fill="#FC4C02" stroke="#FC4C02">
-            <circle cx="32" cy="18" r="6"/>
-            <ellipse cx="32" cy="32" rx="5" ry="6"/>
-            <ellipse cx="32" cy="48" rx="8" ry="10"/>
-          </g>
-          <g stroke="#FC4C02" stroke-width="2.5" stroke-linecap="round" fill="none">
-            <path d="M28 14 L22 5"/>
-            <path d="M36 14 L42 5"/>
-            <path d="M28 28 L16 22"/>
-            <path d="M27 32 L13 32"/>
-            <path d="M28 36 L16 42"/>
-            <path d="M36 28 L48 22"/>
-            <path d="M37 32 L51 32"/>
-            <path d="M36 36 L48 42"/>
-          </g>
-          <path d="M6 40 H18 L22 33 L26 47 L30 40 H38 L42 36 L46 44 L50 40 H58" stroke="#7A8394" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
+        <img src="assets/logo.png" alt="Isotipo de la hormiga Siafu" width="44" height="44">
         <div>
           <p class="footer-name">SIAFU</p>
           <p class="footer-tag">Pruebas de carga por terminal.</p>
@@ -689,14 +663,19 @@
       const ClipboardManager = {
         copy(text, buttonEl) {
           const done = () => {
-            if (!buttonEl) return;
-            const original = buttonEl.getAttribute("data-label") || buttonEl.textContent;
+            if (!buttonEl) return true;
+            const originalText = buttonEl.getAttribute("data-label") || buttonEl.textContent;
+            const originalLabel = buttonEl.getAttribute("aria-label") || "";
             buttonEl.textContent = "Copiado ✓";
             buttonEl.classList.add("copied");
+            buttonEl.setAttribute("aria-label", "Copiado");
+            buttonEl.focus();
             setTimeout(() => {
-              buttonEl.textContent = original;
+              buttonEl.textContent = originalText;
               buttonEl.classList.remove("copied");
+              if (originalLabel) buttonEl.setAttribute("aria-label", originalLabel);
             }, 2000);
+            return true;
           };
           if (navigator.clipboard && window.isSecureContext) {
             return navigator.clipboard.writeText(text).then(done, () =>
@@ -853,7 +832,9 @@
           const m = metricsAt(vus, t);
           const progress = Math.min(1, t / DURATION);
 
-          els["tui-state"].textContent = "EJECUTANDO";
+          if (els["tui-state"].textContent !== "EJECUTANDO") {
+            els["tui-state"].textContent = "EJECUTANDO";
+          }
           els["tui-timer"].textContent = `${fmtTime(t)} / ${fmtTime(DURATION)}`;
           els["tui-stage"].textContent = `etapa ${index + 1}/3`;
           els["tui-vus"].textContent = `VUs ${vus}/20`;
@@ -888,7 +869,7 @@
 
         function renderVerdict() {
           els["tui-state"].textContent = "Veredicto: APROBADA";
-          els["tui-timer"].textContent = "00:12 / 00:12";
+          els["tui-timer"].textContent = "00:10 / 00:10";
           els["tui-stage"].textContent = "completada";
           els["tui-vus"].textContent = "VUs 20/20";
           els["tui-progress"].textContent = "██████████";
@@ -901,9 +882,9 @@
           els["tui-p95"].textContent = "48 ms";
           els["tui-p99"].textContent = "90 ms";
           els["tui-errors"].textContent = "0.8%";
-          els["tui-checks"].textContent = "100.0%";
-          els["tui-requests"].textContent = "18 420";
-          els["tui-iters"].textContent = "6 140";
+          els["tui-checks"].textContent = "99.2%";
+          els["tui-requests"].textContent = "15 350";
+          els["tui-iters"].textContent = "5 117";
           els["tui-rps-now"].textContent = "1535";
           els["tui-p95-now"].textContent = "48 ms";
           els["spark-rps"].setAttribute("points", sparkPoints([300, 700, 1100, 1400, 1535, 1400, 1000, 600, 250, 0], 1700));
@@ -1084,6 +1065,9 @@
             "    max_in_flight: 8000",
             "    on_overload: drop",
             "    on_analysis_exhausted: skip",
+            "",
+            "limits:",
+            "  memory_budget_mb: 600",
             "",
             "scenarios:",
             "  - name: health",

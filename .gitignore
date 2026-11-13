@@ -4,6 +4,9 @@ doc/
 # Agente local del proyecto: no se versiona
 AGENTS.md
 
+# Metadatos locales de edición de imágenes
+assets/.comments/
+
 # Sistema operativo
 .DS_Store
 Thumbs.db
