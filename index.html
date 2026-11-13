@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Siafu — Pruebas de carga por terminal, configuradas con YAML</title>
+  <meta name="description" content="Siafu es una herramienta de pruebas de carga por terminal, configurada con YAML y escrita en Go. Un binario, un YAML y tu destino.">
+  <meta property="og:title" content="Siafu — Pruebas de carga por terminal">
+  <meta property="og:description" content="Un binario, un YAML y tu destino. Sin JavaScript, sin navegadores, sin servicios externos.">
+  <meta property="og:image" content="assets/logo.png">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <style>
+    :root {
+      --color-ink: #0E1116;
+      --color-bone: #E6E1D6;
+      --color-ember: #FC4C02;
+      --color-ash: #7A8394;
+      --color-ink-surface: #141820;
+      --color-border: rgba(122, 131, 148, 0.25);
+      --color-ember-subtle: rgba(252, 76, 2, 0.12);
+      --font-serif: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--color-ink);
+      color: var(--color-bone);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    h1, h2, h3 { font-family: var(--font-serif); font-weight: 400; line-height: 1.15; margin: 0; }
+    p { margin: 0; }
+    a { color: var(--color-bone); }
+    code, pre { font-family: var(--font-mono); }
+    img, svg { display: block; max-width: 100%; }
+
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+    .section { border-bottom: 1px solid var(--color-border); padding: 56px 0; }
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-ember);
+      margin: 0 0 12px;
+    }
+    .section-title { font-size: 2rem; margin: 0 0 16px; }
+    .lead { color: var(--color-ash); font-size: 1.0625rem; max-width: 60ch; }
+
+    /* Navegación */
+    .nav { border-bottom: 1px solid var(--color-border); }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 14px 0;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand:hover { color: var(--color-bone); }
+    .brand-name {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      letter-spacing: 0.14em;
+      line-height: 1;
+    }
+    .brand-version {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-ash);
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 2px 6px;
+      line-height: 1;
+    }
+    .nav-links { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--color-ash);
+      text-decoration: none;
+    }
+    .nav-links a:hover { color: var(--color-ember); }
+    .nav-links a.nav-github {
+      color: var(--color-bone);
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 5px 10px;
+    }
+    .nav-links a.nav-github:hover { border-color: var(--color-ember); color: var(--color-ember); }
+
+    @media (min-width: 640px) {
+      .section { padding: 72px 0; }
+      .section-title { font-size: 2.5rem; }
+    }
+
+    @media (min-width: 900px) {
+      .section { padding: 88px 0; }
+      .section-title { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#hero" aria-label="Siafu — inicio">
+        <svg width="34" height="34" viewBox="0 0 64 64" role="img" aria-label="Isotipo de la hormiga Siafu" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="siafu-left"><rect x="0" y="0" width="32" height="64"/></clipPath>
+            <clipPath id="siafu-right"><rect x="32" y="0" width="32" height="64"/></clipPath>
+          </defs>
+          <g clip-path="url(#siafu-left)" fill="#E6E1D6" stroke="#E6E1D6">
+            <circle cx="32" cy="18" r="6"/>
+            <ellipse cx="32" cy="32" rx="5" ry="6"/>
+            <ellipse cx="32" cy="48" rx="8" ry="10"/>
+          </g>
+          <g clip-path="url(#siafu-right)" fill="#FC4C02" stroke="#FC4C02">
+            <circle cx="32" cy="18" r="6"/>
+            <ellipse cx="32" cy="32" rx="5" ry="6"/>
+            <ellipse cx="32" cy="48" rx="8" ry="10"/>
+          </g>
+          <g stroke="#FC4C02" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <path d="M28 14 L22 5"/>
+            <path d="M36 14 L42 5"/>
+            <path d="M28 28 L16 22"/>
+            <path d="M27 32 L13 32"/>
+            <path d="M28 36 L16 42"/>
+            <path d="M36 28 L48 22"/>
+            <path d="M37 32 L51 32"/>
+            <path d="M36 36 L48 42"/>
+          </g>
+          <path d="M6 40 H18 L22 33 L26 47 L30 40 H38 L42 36 L46 44 L50 40 H58" stroke="#7A8394" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <span class="brand-name">SIAFU</span>
+        <span class="brand-version">v0.4.2</span>
+      </a>
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="#features">Características</a>
+        <a href="#yaml">YAML</a>
+        <a href="#hero">Simulador TUI</a>
+        <a href="#manifest">Arquitectura</a>
+        <a class="nav-github" href="https://github.com/gac982/siafu" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="hero"></section>
+    <section class="section" id="manifest"></section>
+    <section class="section" id="yaml"></section>
+    <section class="section" id="features"></section>
+    <section class="section" id="benchmarks"></section>
+  </main>
+
+  <footer class="section" id="footer"></footer>
+
+  <script>
+    (function () {
+      "use strict";
+    })();
+  </script>
+</body>
+</html>
