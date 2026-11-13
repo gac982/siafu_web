@@ -40,4 +40,4 @@ README.en.md      README en inglés
 
 ## Licencia
 
-El contenido de esta página describe Siafu, que se distribuye bajo AGPL-3.0-or-later.
+Este proyecto se distribuye bajo [AGPL-3.0-or-later](LICENSE). La página describe Siafu, que usa la misma licencia.
