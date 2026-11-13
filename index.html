@@ -248,6 +248,57 @@
       .manifest-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
     }
 
+    /* YAML */
+    .yaml-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--color-border);
+      margin: 28px 0 24px;
+      overflow-x: auto;
+    }
+    .yaml-tab {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-ash);
+      background: transparent;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      padding: 10px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .yaml-tab:hover { color: var(--color-bone); }
+    .yaml-tab.is-active { color: var(--color-bone); border-bottom-color: var(--color-ember); }
+    .yaml-tab:focus-visible { outline: 1px solid var(--color-ember); outline-offset: -1px; }
+    .yaml-grid { display: grid; gap: 20px; }
+    .yaml-code, .yaml-validate {
+      margin: 0;
+      padding: 16px;
+      background: var(--color-ink-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      tab-size: 2;
+    }
+    .yaml-key { color: var(--color-bone); font-weight: 600; }
+    .yaml-string { color: var(--color-bone); }
+    .yaml-num { color: var(--color-ember); }
+    .yaml-var { color: var(--color-ember); }
+    .yaml-comment { color: var(--color-ash); }
+    .yaml-validate-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-ash);
+      margin-bottom: 8px;
+    }
+    .yaml-validate { color: var(--color-ash); }
+    .yaml-validate .ok { color: var(--color-ember); }
+
+    @media (min-width: 900px) {
+      .yaml-grid { grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: start; }
+    }
+
     @media (min-width: 640px) {
       .hero-title { font-size: 2.75rem; }
     }
@@ -416,7 +467,27 @@
         </div>
       </div>
     </section>
-    <section class="section" id="yaml"></section>
+    <section class="section" id="yaml">
+      <div class="wrap">
+        <p class="kicker">Configuración</p>
+        <h2 class="section-title">Un archivo YAML, sin ambigüedad.</h2>
+        <p class="lead">Elige un escenario. La validación ocurre antes de generar carga: si el YAML no es coherente, no sale ninguna petición.</p>
+        <div class="yaml-tabs" role="tablist" aria-label="Ejemplos de configuración">
+          <button class="yaml-tab is-active" role="tab" id="tab-basic" aria-selected="true" aria-controls="yaml-panel" data-tab="basic">Básico (Cerrado)</button>
+          <button class="yaml-tab" role="tab" id="tab-open" aria-selected="false" aria-controls="yaml-panel" data-tab="open" tabindex="-1">Open-Loop</button>
+          <button class="yaml-tab" role="tab" id="tab-http3" aria-selected="false" aria-controls="yaml-panel" data-tab="http3" tabindex="-1">HTTP/3 &amp; WebSocket</button>
+        </div>
+        <div class="yaml-grid" role="tabpanel" id="yaml-panel" aria-labelledby="tab-basic">
+          <div class="yaml-code-wrap">
+            <pre class="yaml-code"><code id="yaml-code"></code></pre>
+          </div>
+          <div class="yaml-validate-wrap" aria-live="polite">
+            <div class="yaml-validate-title">siafu validate</div>
+            <pre class="yaml-validate"><code id="yaml-validate"></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
     <section class="section" id="features"></section>
     <section class="section" id="benchmarks"></section>
   </main>
@@ -759,6 +830,232 @@
 
         return { start, stop, reset, setState };
       })();
+
+      const YAML_EXAMPLES = [
+        {
+          tabId: "tab-basic",
+          yaml: [
+            "version: 1",
+            'name: "API de ejemplo"',
+            "",
+            "target:",
+            '  base_url: "https://api.example.com"',
+            "  timeout: 10s",
+            "",
+            "load:",
+            "  think_time: 300ms",
+            "  stages:",
+            "    - duration: 30s",
+            "      target_vus: 10",
+            "    - duration: 1m",
+            "      target_vus: 50",
+            "    - duration: 30s",
+            "      target_vus: 0",
+            "",
+            "vars:",
+            '  user_email: "load+${ENV:RUN_ID}@example.com"',
+            "",
+            "scenarios:",
+            "  - name: consulta",
+            "    steps:",
+            "      - name: listar",
+            "        request:",
+            "          method: GET",
+            "          url: /items",
+            "        expect:",
+            "          status: 200",
+            '          body_contains: "items"',
+            "",
+            "thresholds:",
+            "  latency_p95: 400ms",
+            "  error_rate: 0.01"
+          ].join("\n"),
+          validate: [
+            "OK  API de ejemplo",
+            "  1 escenario(s), 1 paso(s)",
+            "  duración 2m0s, pico 50 VUs",
+            "  umbrales: p95≤400ms · errores≤1.00%"
+          ].join("\n")
+        },
+        {
+          tabId: "tab-open",
+          yaml: [
+            "version: 1",
+            'name: "Estrés API open-loop"',
+            "",
+            "target:",
+            '  base_url: "https://api.example.com"',
+            "  timeout: 10s",
+            "",
+            "load:",
+            "  mode: open",
+            "  open_loop:",
+            "    stages:",
+            "      - {duration: 1m, target_rate: 1000}",
+            "      - {duration: 2m, target_rate: 5000}",
+            "    max_in_flight: 8000",
+            "    on_overload: drop",
+            "    on_analysis_exhausted: skip",
+            "",
+            "scenarios:",
+            "  - name: health",
+            "    steps:",
+            "      - name: check",
+            "        request:",
+            "          method: GET",
+            "          url: /health",
+            "        expect:",
+            "          status: 200",
+            "",
+            "thresholds:",
+            "  latency_p95: 2s",
+            "  error_rate: 0.0"
+          ].join("\n"),
+          validate: [
+            "OK  Estrés API open-loop",
+            "  1 escenario(s), 1 paso(s)",
+            "  modo open · duración 3m0s · in-flight 8000 · pico 5000 iteraciones/s",
+            "  umbrales: p95≤2s · errores≤0.00%"
+          ].join("\n")
+        },
+        {
+          tabId: "tab-http3",
+          yaml: [
+            "version: 1",
+            'name: "WebSocket sobre HTTP/3"',
+            "",
+            "target:",
+            '  base_url: "https://api.example.com"',
+            "  timeout: 5s",
+            "  http_version: 3",
+            "",
+            "load:",
+            "  stages:",
+            "    - duration: 2s",
+            "      target_vus: 5",
+            "",
+            "scenarios:",
+            "  - name: echo",
+            "    steps:",
+            "      # El handshake WS usa HTTP/1.1; las peticiones HTTP usan QUIC.",
+            "      - name: conectar",
+            "        websocket:",
+            "          action: connect",
+            "          url: /ws",
+            "          connection: echo",
+            "      - name: enviar",
+            "        websocket:",
+            "          action: send",
+            "          connection: echo",
+            '          text: "hola"',
+            "      - name: recibir",
+            "        websocket:",
+            "          action: receive",
+            "          connection: echo",
+            "          expect:",
+            '            message_contains: "hola"',
+            "      - name: cerrar",
+            "        websocket:",
+            "          action: close",
+            "          connection: echo",
+            "",
+            "thresholds:",
+            "  error_rate: 0.01"
+          ].join("\n"),
+          validate: [
+            "OK  WebSocket sobre HTTP/3",
+            "  1 escenario(s), 4 paso(s)",
+            "  duración 2s, pico 5 VUs",
+            "  umbrales: errores≤1.00%"
+          ].join("\n")
+        }
+      ];
+
+      function escapeHtml(s) {
+        return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+
+      function highlightYAML(source) {
+        const tokenRe = /(#.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\$\{[^}]+\})|([A-Za-z0-9_.-]+(?=\s*:))|(\d+(?:\.\d+)?(?:ms|s|m|h)\b)|(\b\d+(?:\.\d+)?\b)/gm;
+        let out = "";
+        let last = 0;
+        let m;
+        while ((m = tokenRe.exec(source))) {
+          out += escapeHtml(source.slice(last, m.index));
+          if (m[1]) {
+            out += '<span class="yaml-comment">' + escapeHtml(m[1]) + "</span>";
+          } else if (m[2]) {
+            const inner = escapeHtml(m[2]).replace(/(\$\{[^}]+\})/g, '<span class="yaml-var">$1</span>');
+            out += '<span class="yaml-string">' + inner + "</span>";
+          } else if (m[3]) {
+            out += '<span class="yaml-var">' + escapeHtml(m[3]) + "</span>";
+          } else if (m[4]) {
+            out += '<span class="yaml-key">' + escapeHtml(m[4]) + "</span>";
+          } else if (m[5]) {
+            out += '<span class="yaml-num">' + escapeHtml(m[5]) + "</span>";
+          } else if (m[6]) {
+            out += '<span class="yaml-num">' + escapeHtml(m[6]) + "</span>";
+          }
+          last = m.index + m[0].length;
+        }
+        out += escapeHtml(source.slice(last));
+        return out;
+      }
+
+      function initTabs(tabList, onSelect) {
+        const tabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
+        function select(index, focus) {
+          tabs.forEach((tab, i) => {
+            const active = i === index;
+            tab.setAttribute("aria-selected", active ? "true" : "false");
+            tab.tabIndex = active ? 0 : -1;
+            tab.classList.toggle("is-active", active);
+          });
+          if (focus) tabs[index].focus();
+          onSelect(index, tabs[index]);
+        }
+        tabs.forEach((tab, i) => {
+          tab.addEventListener("click", () => select(i, false));
+          tab.addEventListener("keydown", (e) => {
+            let next = null;
+            if (e.key === "ArrowRight") next = (i + 1) % tabs.length;
+            else if (e.key === "ArrowLeft") next = (i - 1 + tabs.length) % tabs.length;
+            else if (e.key === "Home") next = 0;
+            else if (e.key === "End") next = tabs.length - 1;
+            if (next !== null) {
+              e.preventDefault();
+              select(next, true);
+            }
+          });
+        });
+        return { select };
+      }
+
+      const yamlTabs = document.querySelector(".yaml-tabs");
+      const yamlCode = document.getElementById("yaml-code");
+      const yamlValidate = document.getElementById("yaml-validate");
+      const yamlPanel = document.getElementById("yaml-panel");
+
+      function renderValidate(text) {
+        if (!yamlValidate) return;
+        yamlValidate.innerHTML = text
+          .split("\n")
+          .map((line, i) => (i === 0 ? '<span class="ok">' + escapeHtml(line) + "</span>" : escapeHtml(line)))
+          .join("\n");
+      }
+
+      function renderYaml(index) {
+        const ex = YAML_EXAMPLES[index];
+        if (!ex) return;
+        if (yamlCode) yamlCode.innerHTML = highlightYAML(ex.yaml);
+        renderValidate(ex.validate);
+        if (yamlPanel) yamlPanel.setAttribute("aria-labelledby", ex.tabId);
+      }
+
+      if (yamlTabs) {
+        initTabs(yamlTabs, (index) => renderYaml(index));
+        renderYaml(0);
+      }
     })();
   </script>
 </body>
