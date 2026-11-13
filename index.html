@@ -100,6 +100,45 @@
     }
     .nav-links a.nav-github:hover { border-color: var(--color-ember); color: var(--color-ember); }
 
+    /* Hero */
+    .hero-grid { display: grid; gap: 32px; }
+    .hero-title { font-size: 2.25rem; line-height: 1.1; margin: 0 0 20px; }
+    .quick-start { display: flex; align-items: center; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+    .command {
+      background: var(--color-ink-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 10px 14px;
+      font-size: 0.875rem;
+      color: var(--color-bone);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .copy-btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-bone);
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .copy-btn:hover { border-color: var(--color-ember); color: var(--color-ember); }
+    .copy-btn.copied { color: var(--color-ember); border-color: var(--color-ember); }
+
+    @media (min-width: 640px) {
+      .hero-title { font-size: 2.75rem; }
+    }
+
+    @media (min-width: 900px) {
+      .hero-grid { grid-template-columns: 45% 55%; gap: 48px; align-items: start; }
+    }
+
+    @media (min-width: 1200px) {
+      .hero-title { font-size: 3.25rem; }
+    }
+
     @media (min-width: 640px) {
       .section { padding: 72px 0; }
       .section-title { font-size: 2.5rem; }
@@ -156,7 +195,20 @@
   </header>
 
   <main>
-    <section class="section" id="hero"></section>
+    <section class="section" id="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">Siafu · v0.4.2</p>
+          <h1 class="hero-title">Pruebas de carga por terminal, configuradas con YAML y escritas en Go.</h1>
+          <p class="lead">Un único binario estático, sin JavaScript ni navegadores, con modo cerrado y open-loop. Describe la prueba en YAML, ejecútala desde la terminal y obtén un veredicto con umbrales y diagnóstico determinista.</p>
+          <div class="quick-start">
+            <code class="command" id="quickstart-command">./bin/siafu run examples/demo.yaml</code>
+            <button class="copy-btn" id="copy-command" type="button" aria-label="Copiar comando">Copiar</button>
+          </div>
+        </div>
+        <div class="hero-tui" id="tui"><!-- Simulador TUI: Fase 3 --></div>
+      </div>
+    </section>
     <section class="section" id="manifest"></section>
     <section class="section" id="yaml"></section>
     <section class="section" id="features"></section>
@@ -168,6 +220,54 @@
   <script>
     (function () {
       "use strict";
+
+      const ClipboardManager = {
+        copy(text, buttonEl) {
+          const done = () => {
+            if (!buttonEl) return;
+            const original = buttonEl.getAttribute("data-label") || buttonEl.textContent;
+            buttonEl.textContent = "Copiado ✓";
+            buttonEl.classList.add("copied");
+            setTimeout(() => {
+              buttonEl.textContent = original;
+              buttonEl.classList.remove("copied");
+            }, 2000);
+          };
+          if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text).then(done, () =>
+              ClipboardManager.fallback(text, done)
+            );
+          }
+          return Promise.resolve(ClipboardManager.fallback(text, done));
+        },
+        fallback(text, done) {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "absolute";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          let ok = false;
+          try {
+            ok = document.execCommand("copy");
+          } catch (e) {
+            ok = false;
+          }
+          document.body.removeChild(ta);
+          if (ok) done();
+          return ok;
+        }
+      };
+
+      const copyBtn = document.getElementById("copy-command");
+      const cmdEl = document.getElementById("quickstart-command");
+      if (copyBtn && cmdEl) {
+        copyBtn.setAttribute("data-label", "Copiar");
+        copyBtn.addEventListener("click", () => {
+          ClipboardManager.copy(cmdEl.textContent.trim(), copyBtn);
+        });
+      }
     })();
   </script>
 </body>
