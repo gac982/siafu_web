@@ -1,6 +1,9 @@
 # Planificación y documentación interna: no se publica en GitHub
 doc/
 
+# Agente local del proyecto: no se versiona
+AGENTS.md
+
 # Sistema operativo
 .DS_Store
 Thumbs.db
