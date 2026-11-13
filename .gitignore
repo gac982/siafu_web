@@ -1,0 +1,12 @@
+# Planificación y documentación interna: no se publica en GitHub
+doc/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+*.swp
+*~
+.vscode/
+.idea/
