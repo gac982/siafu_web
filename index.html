@@ -127,6 +127,127 @@
     .copy-btn:hover { border-color: var(--color-ember); color: var(--color-ember); }
     .copy-btn.copied { color: var(--color-ember); border-color: var(--color-ember); }
 
+    /* TUI */
+    .hero-tui { min-width: 0; }
+    .tui {
+      background: var(--color-ink-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--color-bone);
+      overflow: hidden;
+    }
+    .tui-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border);
+      flex-wrap: wrap;
+    }
+    .tui-title { color: var(--color-bone); font-weight: 600; }
+    .tui-url { color: var(--color-ash); margin-left: auto; }
+    .tui-btn {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--color-ash);
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 3px 8px;
+      cursor: pointer;
+    }
+    .tui-btn:hover { color: var(--color-ember); border-color: var(--color-ember); }
+    .tui-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border);
+      flex-wrap: wrap;
+    }
+    .tui-state { color: var(--color-ember); font-weight: 600; }
+    .tui-meta { color: var(--color-ash); }
+    .tui-progress { color: var(--color-ember); letter-spacing: 1px; margin-left: auto; }
+    .tui-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tui-panel { padding: 10px 12px; }
+    .tui-panel + .tui-panel { border-left: 1px solid var(--color-border); }
+    .tui-panel-title {
+      color: var(--color-ash);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .tui-row { display: flex; justify-content: space-between; gap: 8px; }
+    .tui-label { color: var(--color-ash); }
+    .tui-value { color: var(--color-bone); }
+    .tui-trend { padding: 10px 12px; border-bottom: 1px solid var(--color-border); }
+    .tui-spark { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .tui-spark-svg { flex: 1; height: 24px; min-width: 0; }
+    .tui-log { padding: 10px 12px; border-bottom: 1px solid var(--color-border); }
+    .tui-log-lines { color: var(--color-ash); min-height: 3em; }
+    .tui-log-lines .log-warn { color: var(--color-ember); }
+    .tui-footer { padding: 8px 12px; color: var(--color-ash); font-size: 0.6875rem; }
+
+    @media (max-width: 480px) {
+      .tui-panels { grid-template-columns: 1fr; }
+      .tui-panel + .tui-panel { border-left: 0; border-top: 1px solid var(--color-border); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Manifiesto */
+    .manifest-grid { display: grid; gap: 24px; }
+    .manifest-text p { color: var(--color-ash); margin: 0 0 16px; }
+    .manifest-text p:last-child { margin-bottom: 0; }
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr;
+      margin: 40px 0 0;
+      border-top: 1px solid var(--color-border);
+      border-left: 1px solid var(--color-border);
+    }
+    .metric {
+      padding: 20px;
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-ash);
+    }
+    .metric-value {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      line-height: 1.1;
+      color: var(--color-bone);
+      margin: 8px 0 4px;
+    }
+    .metric-note { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-ember); }
+
+    @media (min-width: 640px) {
+      .metrics { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (min-width: 900px) {
+      .manifest-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+    }
+
     @media (min-width: 640px) {
       .hero-title { font-size: 2.75rem; }
     }
@@ -206,10 +327,95 @@
             <button class="copy-btn" id="copy-command" type="button" aria-label="Copiar comando">Copiar</button>
           </div>
         </div>
-        <div class="hero-tui" id="tui"><!-- Simulador TUI: Fase 3 --></div>
+        <div class="hero-tui" id="tui">
+          <div class="tui" id="tui-root">
+            <div class="tui-bar">
+              <span class="tui-title">SIAFU · Demo local</span>
+              <span class="tui-url">http://127.0.0.1:8080</span>
+              <button class="tui-btn" id="tui-toggle" type="button">Alternar estado</button>
+            </div>
+            <div class="tui-status">
+              <span class="tui-state" id="tui-state" aria-live="polite">EJECUTANDO</span>
+              <span class="tui-meta" id="tui-timer">00:00 / 00:10</span>
+              <span class="tui-meta" id="tui-stage">etapa 1/3</span>
+              <span class="tui-meta" id="tui-vus">VUs 0/20</span>
+              <span class="tui-progress" id="tui-progress" aria-hidden="true"></span>
+            </div>
+            <div class="tui-panels">
+              <div class="tui-panel">
+                <div class="tui-panel-title">GENERADOR</div>
+                <div class="tui-row"><span class="tui-label">CPU</span><span class="tui-value" id="tui-cpu">0%</span></div>
+                <div class="tui-row"><span class="tui-label">RAM</span><span class="tui-value" id="tui-ram">0 GB / 16.0 GB · 0%</span></div>
+                <div class="tui-row"><span class="tui-label">DISCO</span><span class="tui-value" id="tui-disk">0% · 0 GB libres</span></div>
+                <div class="tui-row"><span class="tui-label">RED</span><span class="tui-value" id="tui-net">↓ 0 MB/s · ↑ 0 MB/s</span></div>
+              </div>
+              <div class="tui-panel">
+                <div class="tui-panel-title">CARGA</div>
+                <div class="tui-row"><span class="tui-label">VUs</span><span class="tui-value" id="tui-cv-us">0/20</span></div>
+                <div class="tui-row"><span class="tui-label">RPS</span><span class="tui-value" id="tui-rps">0.0</span></div>
+                <div class="tui-row"><span class="tui-label">p95</span><span class="tui-value" id="tui-p95">0 ms</span></div>
+                <div class="tui-row"><span class="tui-label">p99</span><span class="tui-value" id="tui-p99">0 ms</span></div>
+                <div class="tui-row"><span class="tui-label">Errores</span><span class="tui-value" id="tui-errors">0.0%</span></div>
+                <div class="tui-row"><span class="tui-label">Checks</span><span class="tui-value" id="tui-checks">100.0%</span></div>
+                <div class="tui-row"><span class="tui-label">Peticiones</span><span class="tui-value" id="tui-requests">0</span></div>
+                <div class="tui-row"><span class="tui-label">Iter.</span><span class="tui-value" id="tui-iters">0</span></div>
+              </div>
+            </div>
+            <div class="tui-trend">
+              <div class="tui-panel-title">TENDENCIA</div>
+              <div class="tui-spark">
+                <span class="tui-label">RPS</span>
+                <svg class="tui-spark-svg" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline id="spark-rps" fill="none" stroke="#FC4C02" stroke-width="1.5" points=""/></svg>
+                <span class="tui-value" id="tui-rps-now">0</span>
+              </div>
+              <div class="tui-spark">
+                <span class="tui-label">p95</span>
+                <svg class="tui-spark-svg" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline id="spark-p95" fill="none" stroke="#7A8394" stroke-width="1.5" points=""/></svg>
+                <span class="tui-value" id="tui-p95-now">0 ms</span>
+              </div>
+            </div>
+            <div class="tui-log">
+              <div class="tui-panel-title">LOG</div>
+              <div class="tui-log-lines" id="tui-log-lines"></div>
+            </div>
+            <div class="tui-footer">Ctrl+D detener · X logs · ? ayuda · Ctrl+C salir · ↑↓ desplazar</div>
+          </div>
+        </div>
       </div>
     </section>
-    <section class="section" id="manifest"></section>
+    <section class="section" id="manifest">
+      <div class="wrap">
+        <p class="kicker">Por qué existe Siafu</p>
+        <h2 class="section-title">Menos código, más criterio.</h2>
+        <div class="manifest-grid">
+          <div class="manifest-text">
+            <p>Las herramientas de carga más potentes de la industria piden escribir escenarios en JavaScript o en la JVM. Eso está bien cuando el escenario es el producto. Cuando solo quieres responder «¿aguanta?», el guion se vuelve una segunda base de código que hay que versionar, revisar y depurar.</p>
+            <p>Siafu cambia el contrato: describes la prueba en YAML, la validas antes de generar carga y obtienes un veredicto con umbrales explícitos. Sin cajas negras ni puntuaciones opacas. El diagnóstico se aplica con reglas deterministas y testeables.</p>
+          </div>
+          <div class="manifest-text">
+            <p>Un archivo YAML cabe en una revisión de pull request. <code>siafu validate</code> acumula todos los errores con su ruta de campo antes de lanzar una sola petición. Y si algo falla, el reporte distingue entre saturación del servidor (5xx, 429) y un cuello de botella en el generador local.</p>
+            <p>El resultado es una prueba de humo o de capacidad que se ejecuta desde la terminal, se entiende en minutos y se puede meter en CI sin infraestructura adicional.</p>
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <p class="metric-label">Dependencias en runtime</p>
+            <p class="metric-value">0</p>
+            <p class="metric-note">CGO_ENABLED=0</p>
+          </div>
+          <div class="metric">
+            <p class="metric-label">VUs máximos</p>
+            <p class="metric-value">20 000</p>
+            <p class="metric-note">límite duro</p>
+          </div>
+          <div class="metric">
+            <p class="metric-label">Presupuesto de memoria</p>
+            <p class="metric-value">1 024 MiB</p>
+            <p class="metric-note">con guardas RSS</p>
+          </div>
+        </div>
+      </div>
+    </section>
     <section class="section" id="yaml"></section>
     <section class="section" id="features"></section>
     <section class="section" id="benchmarks"></section>
@@ -268,6 +474,291 @@
           ClipboardManager.copy(cmdEl.textContent.trim(), copyBtn);
         });
       }
+
+      const TUISimulator = (function () {
+        const DURATION = 10000;
+        const TICK = 250;
+        const HISTORY = 40;
+        const STAGES = [
+          { duration: 2000, from: 0, to: 20 },
+          { duration: 6000, from: 20, to: 20 },
+          { duration: 2000, from: 20, to: 0 }
+        ];
+        const ORDER = ["running", "verdict", "openloop"];
+        const NEXT_LABEL = { running: "Ver veredicto", verdict: "Ver open-loop", openloop: "Reiniciar" };
+        const LOG_LINES = [
+          { t: 0, level: "INFO", text: "etapa 1/3" },
+          { t: 2000, level: "INFO", text: "etapa 2/3" },
+          { t: 4000, level: "WARN", text: "products/listado → 500 (status)" },
+          { t: 8000, level: "INFO", text: "etapa 3/3" }
+        ];
+
+        let els = {};
+        let timer = null;
+        let startTime = 0;
+        let elapsed = 0;
+        let state = "running";
+        let rpsHistory = [];
+        let p95History = [];
+        let requests = 0;
+        let iters = 0;
+
+        function collect() {
+          [
+            "tui-state", "tui-timer", "tui-stage", "tui-vus", "tui-progress",
+            "tui-cpu", "tui-ram", "tui-disk", "tui-net",
+            "tui-cv-us", "tui-rps", "tui-p95", "tui-p99", "tui-errors",
+            "tui-checks", "tui-requests", "tui-iters",
+            "tui-rps-now", "tui-p95-now", "spark-rps", "spark-p95",
+            "tui-log-lines", "tui-toggle"
+          ].forEach((id) => {
+            els[id] = document.getElementById(id);
+          });
+        }
+
+        function stageAt(t) {
+          let acc = 0;
+          for (let i = 0; i < STAGES.length; i++) {
+            const s = STAGES[i];
+            if (t < acc + s.duration) {
+              const p = s.duration === 0 ? 1 : (t - acc) / s.duration;
+              return { index: i, vus: Math.round(s.from + (s.to - s.from) * p) };
+            }
+            acc += s.duration;
+          }
+          return { index: STAGES.length - 1, vus: STAGES[STAGES.length - 1].to };
+        }
+
+        function metricsAt(vus, t) {
+          const load = vus / 20;
+          const n = Math.sin(t / 300) * 0.5 + Math.sin(t / 170) * 0.5;
+          const rps = Math.max(0, vus * 76.75 + n * 40);
+          const p95 = Math.max(20, 30 + vus * 0.9 + n * 6);
+          const err = vus > 0 ? Math.max(0, 0.5 + load * 0.4 + n * 0.15) : 0;
+          return {
+            rps,
+            p95,
+            p99: p95 * 1.9,
+            errors: err,
+            checks: 100 - err,
+            cpu: Math.max(0, 22 + load * 14 + n * 3),
+            ram: 2.5 + load * 3.7 + n * 0.2,
+            disk: 61 + Math.round(n),
+            netDown: Math.max(0, load * 12.4 + n),
+            netUp: Math.max(0, load * 3.1 + n * 0.2)
+          };
+        }
+
+        function fmtTime(ms) {
+          const total = Math.floor(ms / 1000);
+          const mm = String(Math.floor(total / 60)).padStart(2, "0");
+          const ss = String(total % 60).padStart(2, "0");
+          return `${mm}:${ss}`;
+        }
+
+        function fmtInt(n) {
+          return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        function sparkPoints(values, max) {
+          const n = values.length;
+          if (n === 0) return "";
+          const step = n > 1 ? 100 / (n - 1) : 0;
+          return values
+            .map((v, i) => {
+              const x = (i * step).toFixed(1);
+              const y = (24 - (Math.max(0, v) / max) * 22 - 1).toFixed(1);
+              return `${x},${y}`;
+            })
+            .join(" ");
+        }
+
+        function renderLog() {
+          if (!els["tui-log-lines"]) return;
+          const base = 10 * 3600 + 42 * 60 + 1;
+          const lines = LOG_LINES.filter((l) => l.t <= elapsed);
+          els["tui-log-lines"].innerHTML = lines
+            .map((l) => {
+              const ts = base + Math.floor(l.t / 1000);
+              const hh = String(Math.floor(ts / 3600)).padStart(2, "0");
+              const mm = String(Math.floor((ts % 3600) / 60)).padStart(2, "0");
+              const ss = String(ts % 60).padStart(2, "0");
+              const cls = l.level === "WARN" ? ' class="log-warn"' : "";
+              return `<div${cls}>${hh}:${mm}:${ss} ${l.level}  ${l.text}</div>`;
+            })
+            .join("");
+        }
+
+        function renderRunning(t) {
+          const { index, vus } = stageAt(t);
+          const m = metricsAt(vus, t);
+          const progress = Math.min(1, t / DURATION);
+
+          els["tui-state"].textContent = "EJECUTANDO";
+          els["tui-timer"].textContent = `${fmtTime(t)} / ${fmtTime(DURATION)}`;
+          els["tui-stage"].textContent = `etapa ${index + 1}/3`;
+          els["tui-vus"].textContent = `VUs ${vus}/20`;
+          const blocks = Math.round(progress * 10);
+          els["tui-progress"].textContent = "█".repeat(blocks) + "░".repeat(10 - blocks);
+
+          els["tui-cpu"].textContent = `${Math.round(m.cpu)}%`;
+          els["tui-ram"].textContent = `${m.ram.toFixed(1)} GB / 16.0 GB · ${Math.round((m.ram / 16) * 100)}%`;
+          els["tui-disk"].textContent = `${m.disk}% · 142 GB libres`;
+          els["tui-net"].textContent = `↓ ${m.netDown.toFixed(1)} MB/s · ↑ ${m.netUp.toFixed(1)} MB/s`;
+
+          els["tui-cv-us"].textContent = `${vus}/20`;
+          els["tui-rps"].textContent = m.rps.toFixed(1);
+          els["tui-p95"].textContent = `${Math.round(m.p95)} ms`;
+          els["tui-p99"].textContent = `${Math.round(m.p99)} ms`;
+          els["tui-errors"].textContent = `${m.errors.toFixed(1)}%`;
+          els["tui-checks"].textContent = `${m.checks.toFixed(1)}%`;
+          els["tui-requests"].textContent = fmtInt(requests);
+          els["tui-iters"].textContent = fmtInt(iters);
+          els["tui-rps-now"].textContent = String(Math.round(m.rps));
+          els["tui-p95-now"].textContent = `${Math.round(m.p95)} ms`;
+
+          rpsHistory.push(m.rps);
+          p95History.push(m.p95);
+          if (rpsHistory.length > HISTORY) rpsHistory.shift();
+          if (p95History.length > HISTORY) p95History.shift();
+          els["spark-rps"].setAttribute("points", sparkPoints(rpsHistory, 1700));
+          els["spark-p95"].setAttribute("points", sparkPoints(p95History, 80));
+
+          renderLog();
+        }
+
+        function renderVerdict() {
+          els["tui-state"].textContent = "Veredicto: APROBADA";
+          els["tui-timer"].textContent = "00:12 / 00:12";
+          els["tui-stage"].textContent = "completada";
+          els["tui-vus"].textContent = "VUs 20/20";
+          els["tui-progress"].textContent = "██████████";
+          els["tui-cpu"].textContent = "34%";
+          els["tui-ram"].textContent = "6.2 GB / 16.0 GB · 39%";
+          els["tui-disk"].textContent = "61% · 142 GB libres";
+          els["tui-net"].textContent = "↓ 12.4 MB/s · ↑ 3.1 MB/s";
+          els["tui-cv-us"].textContent = "20/20";
+          els["tui-rps"].textContent = "1535.0";
+          els["tui-p95"].textContent = "48 ms";
+          els["tui-p99"].textContent = "90 ms";
+          els["tui-errors"].textContent = "0.8%";
+          els["tui-checks"].textContent = "100.0%";
+          els["tui-requests"].textContent = "18 420";
+          els["tui-iters"].textContent = "6 140";
+          els["tui-rps-now"].textContent = "1535";
+          els["tui-p95-now"].textContent = "48 ms";
+          els["spark-rps"].setAttribute("points", sparkPoints([300, 700, 1100, 1400, 1535, 1400, 1000, 600, 250, 0], 1700));
+          els["spark-p95"].setAttribute("points", sparkPoints([30, 38, 44, 47, 48, 46, 42, 36, 30, 24], 80));
+          if (els["tui-log-lines"]) {
+            els["tui-log-lines"].innerHTML =
+              '<div>10:42:01 INFO  etapa 2/3</div>' +
+              '<div class="log-warn">10:42:03 WARN  products/listado → 500 (status)</div>' +
+              '<div>10:42:12 INFO  veredicto APROBADA</div>';
+          }
+        }
+
+        function renderOpenLoop() {
+          els["tui-state"].textContent = "Modo Open-Loop";
+          els["tui-timer"].textContent = "00:30 / 00:30";
+          els["tui-stage"].textContent = "etapa 2/2";
+          els["tui-vus"].textContent = "tasa 20 000/s";
+          els["tui-progress"].textContent = "██████████";
+          els["tui-cpu"].textContent = "41%";
+          els["tui-ram"].textContent = "5.8 GB / 16.0 GB · 36%";
+          els["tui-disk"].textContent = "61% · 142 GB libres";
+          els["tui-net"].textContent = "↓ 38.2 MB/s · ↑ 9.4 MB/s";
+          els["tui-cv-us"].textContent = "221 in-flight";
+          els["tui-rps"].textContent = "19999.1";
+          els["tui-p95"].textContent = "2 s";
+          els["tui-p99"].textContent = "4 s";
+          els["tui-errors"].textContent = "0.0%";
+          els["tui-checks"].textContent = "100.0%";
+          els["tui-requests"].textContent = "1 000 000";
+          els["tui-iters"].textContent = "1 000 000";
+          els["tui-rps-now"].textContent = "19999";
+          els["tui-p95-now"].textContent = "2 s";
+          els["spark-rps"].setAttribute("points", sparkPoints([2000, 5000, 12000, 19999, 19999, 19999, 19999, 19999, 10000, 0], 22000));
+          els["spark-p95"].setAttribute("points", sparkPoints([200, 400, 800, 1500, 2000, 2000, 2000, 2000, 1000, 500], 2400));
+          if (els["tui-log-lines"]) {
+            els["tui-log-lines"].innerHTML =
+              '<div>10:42:01 INFO  modo open-loop · tasa 20000 iteraciones/s</div>' +
+              '<div>10:42:11 INFO  in-flight pico 221 · descartes 0</div>' +
+              '<div>10:42:30 INFO  tasa alcanzada 19999.1/s</div>';
+          }
+        }
+
+        function tick() {
+          elapsed = Date.now() - startTime;
+          if (elapsed >= DURATION) {
+            elapsed = DURATION;
+            stop();
+            setState("verdict");
+            return;
+          }
+          const { vus } = stageAt(elapsed);
+          const m = metricsAt(vus, elapsed);
+          requests += m.rps * (TICK / 1000);
+          iters += (m.rps * (TICK / 1000)) / 2;
+          renderRunning(elapsed);
+        }
+
+        function start() {
+          stop();
+          elapsed = 0;
+          requests = 0;
+          iters = 0;
+          rpsHistory = [];
+          p95History = [];
+          startTime = Date.now();
+          renderRunning(0);
+          timer = setInterval(tick, TICK);
+        }
+
+        function stop() {
+          if (timer) {
+            clearInterval(timer);
+            timer = null;
+          }
+        }
+
+        function reset() {
+          start();
+        }
+
+        function setState(next) {
+          state = next;
+          if (els["tui-toggle"]) {
+            els["tui-toggle"].textContent = NEXT_LABEL[state];
+          }
+          if (state === "running") {
+            start();
+          } else {
+            stop();
+            if (state === "verdict") renderVerdict();
+            else renderOpenLoop();
+          }
+        }
+
+        function cycle() {
+          const i = ORDER.indexOf(state);
+          setState(ORDER[(i + 1) % ORDER.length]);
+        }
+
+        collect();
+        if (els["tui-toggle"]) {
+          els["tui-toggle"].addEventListener("click", cycle);
+          els["tui-toggle"].textContent = NEXT_LABEL[state];
+        }
+
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduced) {
+          setState("verdict");
+        } else {
+          start();
+        }
+
+        return { start, stop, reset, setState };
+      })();
     })();
   </script>
 </body>
